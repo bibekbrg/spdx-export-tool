@@ -1,0 +1,14 @@
+# Private rough work, never push
+For claude/
+
+# Python junk
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/

@@ -1,0 +1,6 @@
+package_id,package_name,version,supplier,origin,declared_license,concluded_license,package_copyright,file_path,sha1,found_license,file_concluded_license,file_copyright,depends_on
+pkg-app,demo-app,1.0.0,Demo Team,https://github.com/example/demo-app,Apache-2.0,Apache-2.0,Copyright 2026 Demo Team,app/main.c,8c9d14b64da9026abd3b1fce520de54cf757f084,Apache-2.0,Apache-2.0,Copyright 2026 Demo Team,pkg-libfoo;pkg-libbar
+pkg-libfoo,libfoo,1.2.0,Acme Corp,https://github.com/acme/libfoo,MIT,MIT,Copyright 2024 Acme Corp,src/foo.c,219ae878d2877fc176e05830ab919104d0852352,MIT,MIT,Copyright 2024 Acme Corp,
+pkg-libfoo,libfoo,1.2.0,Acme Corp,https://github.com/acme/libfoo,MIT,MIT,Copyright 2024 Acme Corp,include/foo.h,e33afa0fa0c1849b1a86f75977f5ad134f1bfd35,MIT,MIT,Copyright 2024 Acme Corp,
+pkg-libfoo,libfoo,1.2.0,Acme Corp,https://github.com/acme/libfoo,MIT,MIT,Copyright 2024 Acme Corp,LICENSE,d09cf782f6a47209227be47c32263cd68547d765,MIT,MIT,NONE,
+pkg-libbar,libbar,0.9.1,Bar Labs,https://github.com/barlabs/libbar,BSD-3-Clause,BSD-3-Clause,Copyright 2023 Bar Labs,src/bar.c,3681acb493b62147ffd0faad7751a500dd11f1c8,BSD-3-Clause,BSD-3-Clause,Copyright 2023 Bar Labs,

@@ -1,0 +1,43 @@
+{
+  "document_name": "broken-example",
+  "packages": [
+    {
+      "id": "pkg-libfoo",
+      "name": "libfoo",
+      "version": "1.2.0"
+    },
+    {
+      "id": "pkg-noname",
+      "version": "2.0.0"
+    },
+    {
+      "id": "pkg-libfoo",
+      "name": "libfoo-duplicate"
+    }
+  ],
+  "files": [
+    {
+      "package_id": "pkg-libfoo",
+      "path": "src/foo.c"
+    },
+    {
+      "package_id": "pkg-libfoo",
+      "path": "include/foo.h",
+      "sha1": "not-a-real-sha1"
+    },
+    {
+      "package_id": "pkg-does-not-exist",
+      "path": "src/orphan.c",
+      "sha1": "866a7917155da7b06261ea20fcbf207f1e80caaa"
+    },
+    {
+      "package_id": "pkg-libfoo",
+      "sha1": "e33afa0fa0c1849b1a86f75977f5ad134f1bfd35"
+    }
+  ],
+  "relationships": [
+    { "from": "pkg-libfoo", "type": "DEPENDS_ON", "to": "pkg-ghost" },
+    { "from": "pkg-libfoo", "type": "USES", "to": "pkg-libfoo" },
+    { "from": "pkg-libfoo", "type": "DEPENDS_ON", "to": "pkg-libfoo" }
+  ]
+}

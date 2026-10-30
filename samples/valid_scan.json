@@ -1,0 +1,81 @@
+{
+  "document_name": "demo-app-1.0",
+  "packages": [
+    {
+      "id": "pkg-app",
+      "name": "demo-app",
+      "version": "1.0.0",
+      "supplier": "Demo Team",
+      "origin": "https://github.com/example/demo-app",
+      "declared_license": "Apache-2.0",
+      "concluded_license": "Apache-2.0",
+      "copyright": "Copyright 2026 Demo Team"
+    },
+    {
+      "id": "pkg-libfoo",
+      "name": "libfoo",
+      "version": "1.2.0",
+      "supplier": "Acme Corp",
+      "origin": "https://github.com/acme/libfoo",
+      "declared_license": "MIT",
+      "concluded_license": "MIT",
+      "copyright": "Copyright 2024 Acme Corp"
+    },
+    {
+      "id": "pkg-libbar",
+      "name": "libbar",
+      "version": "0.9.1",
+      "supplier": "Bar Labs",
+      "origin": "https://github.com/barlabs/libbar",
+      "declared_license": "BSD-3-Clause",
+      "concluded_license": "BSD-3-Clause",
+      "copyright": "Copyright 2023 Bar Labs"
+    }
+  ],
+  "files": [
+    {
+      "package_id": "pkg-app",
+      "path": "app/main.c",
+      "sha1": "8c9d14b64da9026abd3b1fce520de54cf757f084",
+      "found_license": "Apache-2.0",
+      "concluded_license": "Apache-2.0",
+      "copyright": "Copyright 2026 Demo Team"
+    },
+    {
+      "package_id": "pkg-libfoo",
+      "path": "src/foo.c",
+      "sha1": "219ae878d2877fc176e05830ab919104d0852352",
+      "found_license": "MIT",
+      "concluded_license": "MIT",
+      "copyright": "Copyright 2024 Acme Corp"
+    },
+    {
+      "package_id": "pkg-libfoo",
+      "path": "include/foo.h",
+      "sha1": "e33afa0fa0c1849b1a86f75977f5ad134f1bfd35",
+      "found_license": "MIT",
+      "concluded_license": "MIT",
+      "copyright": "Copyright 2024 Acme Corp"
+    },
+    {
+      "package_id": "pkg-libfoo",
+      "path": "LICENSE",
+      "sha1": "d09cf782f6a47209227be47c32263cd68547d765",
+      "found_license": "MIT",
+      "concluded_license": "MIT",
+      "copyright": "NONE"
+    },
+    {
+      "package_id": "pkg-libbar",
+      "path": "src/bar.c",
+      "sha1": "3681acb493b62147ffd0faad7751a500dd11f1c8",
+      "found_license": "BSD-3-Clause",
+      "concluded_license": "BSD-3-Clause",
+      "copyright": "Copyright 2023 Bar Labs"
+    }
+  ],
+  "relationships": [
+    { "from": "pkg-app", "type": "DEPENDS_ON", "to": "pkg-libfoo" },
+    { "from": "pkg-app", "type": "DEPENDS_ON", "to": "pkg-libbar" }
+  ]
+}

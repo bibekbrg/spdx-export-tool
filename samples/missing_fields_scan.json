@@ -1,0 +1,33 @@
+{
+  "packages": [
+    {
+      "id": "pkg-libfoo",
+      "name": "libfoo",
+      "version": "1.2.0",
+      "declared_license": "MIT"
+    },
+    {
+      "id": "pkg-libbar",
+      "name": "libbar"
+    }
+  ],
+  "files": [
+    {
+      "package_id": "pkg-libfoo",
+      "path": "src/foo.c",
+      "sha1": "219ae878d2877fc176e05830ab919104d0852352"
+    },
+    {
+      "package_id": "pkg-libbar",
+      "path": "src/bar.c",
+      "sha1": "3681acb493b62147ffd0faad7751a500dd11f1c8",
+      "found_license": "BSD-3-Clause"
+    },
+    {
+      "package_id": "pkg-libbar",
+      "path": "src/bar_util.c",
+      "sha1": "866a7917155da7b06261ea20fcbf207f1e80caaa",
+      "copyright": "NONE"
+    }
+  ]
+}

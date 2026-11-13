@@ -94,10 +94,10 @@ spdx-export-tool/
 │       ├── mapper.py         # Builds the SPDX 2.3 document + missing-data policy     (Week 2 ✅)
 │       ├── serializer.py     # Writes pretty, stable-ordered JSON                     (Week 2 ✅)
 │       ├── pipeline.py       # Runs the steps in order                                (Week 2 ✅)
-│       ├── validator.py      # Validates output against the SPDX 2.3 schema           (Week 3)
-│       └── cli.py            # Command-line entry point                               (Week 3)
-├── schemas/
-│   └── spdx-schema-2.3.json  # Official SPDX 2.3 JSON schema
+│       ├── validator.py      # Validates output against the SPDX 2.3 schema           (Week 3 ✅)
+│       └── cli.py            # Command-line entry point: spdx-export                  (Week 3 ✅)
+│       └── schemas/
+│           └── spdx-schema-2.3.json  # Official SPDX 2.3 JSON schema (bundled with the package)
 ├── tests/                    # pytest unit, integration and end-to-end tests
 ├── samples/                  # Sample scan inputs: valid, missing fields, broken
 ├── docs/                     # Architecture, field mapping table, missing-data policy

@@ -1,5 +1,7 @@
 # SPDX Export Tool
 
+![tests](https://github.com/bibekbrg/spdx-export-tool/actions/workflows/ci.yml/badge.svg)
+
 A Python command-line tool that converts compliance scan records (JSON/CSV) into validated SPDX 2.3 JSON reports.
 
 It maps scan results (packages, files, licenses, checksums, relationships) into an SPDX 2.3 document, checks it against the official SPDX schema, and lists any missing data in a gap report. **It never makes up missing values.**
@@ -8,14 +10,19 @@ It maps scan results (packages, files, licenses, checksums, relationships) into 
 
 ## Status
 
-🚧 **Week 2: Core Development (done)**: 31 unit tests passing, 93% coverage
+🚧 **Week 3: Integration (in progress)**: working CLI, official schema validation, gap report, CI. 41 tests passing, 94% coverage.
 
 | Week | Focus | Status |
 |---|---|---|
 | 1 | SPDX version, input format, field mapping, missing-data policy, sample files, repo setup | ✅ |
 | 2 | Data model, input adapters, JSON serializer, SPDXID generator, unit tests | ✅ |
-| 3 | Schema validation, gap report, CLI, GitHub Actions | ⏳ |
+| 3 | Schema validation, gap report, CLI, GitHub Actions | ✅ core done |
 | 4 | More tests (≥85% coverage), performance check, docs, demo | ⏳ |
+
+## Quick demo (Windows)
+
+Double-click **`demo.bat`**. It sets itself up on the first run, then shows 4 live cases:
+valid JSON → SPDX created · same data as CSV · missing fields → NOASSERTION + gap report · broken scan → refused with every error listed.
 
 ## Setup
 
@@ -23,13 +30,36 @@ It maps scan results (packages, files, licenses, checksums, relationships) into 
 python -m venv .venv
 .venv\Scripts\activate          # Windows  (Linux/macOS: source .venv/bin/activate)
 pip install -r requirements.txt
+pip install -e .
 ```
 
-## Try it (Week 2)
+## Usage
 
 ```bash
-python -c "import sys; sys.path.insert(0, 'src'); from spdx_export.pipeline import convert; from spdx_export.serializer import to_json; doc, gaps = convert('samples/valid_scan.json'); print(to_json(doc))"
+spdx-export --input samples/valid_scan.json --output bom.spdx.json
 ```
+
+```
+SPDX Export Tool 0.1.0
+  Input   : samples/valid_scan.json
+  Read    : 3 packages, 5 files, 2 relationships
+  Schema  : valid against official SPDX 2.3 schema
+  Gaps    : 0 errors, 0 warnings, 0 info
+  Output  : bom.spdx.json
+  Result  : SUCCESS
+```
+
+| Option | Meaning |
+|---|---|
+| `-i, --input` | scan file (`.json` or `.csv`) |
+| `-o, --output` | where to write the SPDX JSON |
+| `--created` | fixed creation time `YYYY-MM-DDThh:mm:ssZ`, for byte-identical repeat runs |
+| `--creator` | person added to `creators`, e.g. `"Bibek Roy"` |
+| `--namespace-base` | base URL for `documentNamespace` |
+| `--gap-report` | also save the gap report to a text file |
+| `-q, --quiet` | summary only |
+
+**Exit codes:** `0` success · `1` input errors (no file written) · `2` schema validation failed · `3` bad usage / unreadable input
 
 Example output: [`samples/expected/valid_scan.spdx.json`](samples/expected/valid_scan.spdx.json)
 
@@ -40,13 +70,7 @@ python -m pytest
 python -m coverage run --source=src -m pytest && python -m coverage report
 ```
 
-## Planned CLI (Week 3)
-
-```bash
-spdx-export --input samples/valid_scan.json --output bom.spdx.json
-```
-
-Options (planned): `--created` (fixed timestamp for repeatable output), `--creator`, `--namespace-base`.
+Tests also run automatically on every push (GitHub Actions, Python 3.10 and 3.12).
 
 ## Documentation
 
@@ -67,10 +91,14 @@ src/spdx_export/
   spdxid.py      deterministic SPDXRef-... IDs
   mapper.py      build the SPDX 2.3 document, apply missing-data policy
   serializer.py  write stable, pretty UTF-8 JSON
-  pipeline.py    runs the steps in order
-tests/           pytest unit tests
+  validator.py   check against the official SPDX 2.3 JSON schema
+  cli.py         the spdx-export command
+  pipeline.py    the steps in order, for use from Python
+  schemas/       official SPDX 2.3 JSON schema (from github.com/spdx/spdx-spec)
+tests/           pytest tests
 samples/         sample scan inputs + expected output
 docs/            design documents
+demo.bat         one-click live demo
 ```
 
 ## Tech stack

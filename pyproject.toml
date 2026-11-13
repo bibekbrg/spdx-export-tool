@@ -1,0 +1,12 @@
+[project]
+name = "spdx-export-tool"
+version = "0.1.0"
+description = "Convert compliance scan records (JSON/CSV) into validated SPDX 2.3 JSON reports."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Bibek Roy" }]
+dependencies = ["jsonschema"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

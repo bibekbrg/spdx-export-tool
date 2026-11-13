@@ -88,17 +88,14 @@ spdx-export-tool/
 ├── src/
 │   └── spdx_export/
 │       ├── __init__.py
-│       ├── cli.py            # Command-line entry point: reads arguments, runs the pipeline
-│       ├── adapters/
-│       │   ├── json_adapter.py   # Reads JSON scan files
-│       │   └── csv_adapter.py    # Reads CSV scan files
-│       ├── model.py          # Dataclasses: Package, File, Relationship, Diagnostic
-│       ├── normalizer.py     # Cleans raw rows into model objects
-│       ├── spdxid.py         # Deterministic SPDXRef-... ID generator
-│       ├── mapper.py         # Builds the SPDX 2.3 document structure
-│       ├── gaps.py           # Missing-data policy and gap report
-│       ├── serializer.py     # Writes pretty, stable-ordered JSON
-│       └── validator.py      # Validates output against the SPDX 2.3 schema
+│       ├── model.py          # Dataclasses: Package, File, Relationship, Diagnostic   (Week 2 ✅)
+│       ├── adapters.py       # Reads JSON/CSV and normalizes rows into model objects  (Week 2 ✅)
+│       ├── spdxid.py         # Deterministic SPDXRef-... ID generator                 (Week 2 ✅)
+│       ├── mapper.py         # Builds the SPDX 2.3 document + missing-data policy     (Week 2 ✅)
+│       ├── serializer.py     # Writes pretty, stable-ordered JSON                     (Week 2 ✅)
+│       ├── pipeline.py       # Runs the steps in order                                (Week 2 ✅)
+│       ├── validator.py      # Validates output against the SPDX 2.3 schema           (Week 3)
+│       └── cli.py            # Command-line entry point                               (Week 3)
 ├── schemas/
 │   └── spdx-schema-2.3.json  # Official SPDX 2.3 JSON schema
 ├── tests/                    # pytest unit, integration and end-to-end tests

@@ -1,0 +1,177 @@
+{
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "creationInfo": {
+    "created": "2026-11-13T00:00:00Z",
+    "creators": [
+      "Tool: spdx-export-0.1.0",
+      "Person: Bibek Roy"
+    ]
+  },
+  "dataLicense": "CC0-1.0",
+  "documentNamespace": "https://spdx.org/spdxdocs/demo-app-1.0-4a36bd6b797f",
+  "files": [
+    {
+      "SPDXID": "SPDXRef-File-LICENSE-4ee9eb",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d09cf782f6a47209227be47c32263cd68547d765"
+        }
+      ],
+      "copyrightText": "NONE",
+      "fileName": "./LICENSE",
+      "licenseConcluded": "MIT",
+      "licenseInfoInFiles": [
+        "MIT"
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-File-app-main.c-4431a8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "8c9d14b64da9026abd3b1fce520de54cf757f084"
+        }
+      ],
+      "copyrightText": "Copyright 2026 Demo Team",
+      "fileName": "./app/main.c",
+      "licenseConcluded": "Apache-2.0",
+      "licenseInfoInFiles": [
+        "Apache-2.0"
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-File-include-foo.h-54c184",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e33afa0fa0c1849b1a86f75977f5ad134f1bfd35"
+        }
+      ],
+      "copyrightText": "Copyright 2024 Acme Corp",
+      "fileName": "./include/foo.h",
+      "licenseConcluded": "MIT",
+      "licenseInfoInFiles": [
+        "MIT"
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-File-src-bar.c-22f3f2",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3681acb493b62147ffd0faad7751a500dd11f1c8"
+        }
+      ],
+      "copyrightText": "Copyright 2023 Bar Labs",
+      "fileName": "./src/bar.c",
+      "licenseConcluded": "BSD-3-Clause",
+      "licenseInfoInFiles": [
+        "BSD-3-Clause"
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-File-src-foo.c-925486",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "219ae878d2877fc176e05830ab919104d0852352"
+        }
+      ],
+      "copyrightText": "Copyright 2024 Acme Corp",
+      "fileName": "./src/foo.c",
+      "licenseConcluded": "MIT",
+      "licenseInfoInFiles": [
+        "MIT"
+      ]
+    }
+  ],
+  "name": "demo-app-1.0",
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-demo-app-1.0.0-fe5f67",
+      "copyrightText": "Copyright 2026 Demo Team",
+      "downloadLocation": "https://github.com/example/demo-app",
+      "filesAnalyzed": true,
+      "licenseConcluded": "Apache-2.0",
+      "licenseDeclared": "Apache-2.0",
+      "name": "demo-app",
+      "packageVerificationCode": {
+        "packageVerificationCodeValue": "efb4268504b71773cb77839c274a2f8b840eb8ce"
+      },
+      "supplier": "Organization: Demo Team",
+      "versionInfo": "1.0.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-libbar-0.9.1-c28b19",
+      "copyrightText": "Copyright 2023 Bar Labs",
+      "downloadLocation": "https://github.com/barlabs/libbar",
+      "filesAnalyzed": true,
+      "licenseConcluded": "BSD-3-Clause",
+      "licenseDeclared": "BSD-3-Clause",
+      "name": "libbar",
+      "packageVerificationCode": {
+        "packageVerificationCodeValue": "9597ede638e372d9b36894aceca8bf35238b62d2"
+      },
+      "supplier": "Organization: Bar Labs",
+      "versionInfo": "0.9.1"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-libfoo-1.2.0-37ec51",
+      "copyrightText": "Copyright 2024 Acme Corp",
+      "downloadLocation": "https://github.com/acme/libfoo",
+      "filesAnalyzed": true,
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "name": "libfoo",
+      "packageVerificationCode": {
+        "packageVerificationCodeValue": "5646960259b02521d0390a41b5ca0d6613694e12"
+      },
+      "supplier": "Organization: Acme Corp",
+      "versionInfo": "1.2.0"
+    }
+  ],
+  "relationships": [
+    {
+      "relatedSpdxElement": "SPDXRef-Package-demo-app-1.0.0-fe5f67",
+      "relationshipType": "DESCRIBES",
+      "spdxElementId": "SPDXRef-DOCUMENT"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-File-app-main.c-4431a8",
+      "relationshipType": "CONTAINS",
+      "spdxElementId": "SPDXRef-Package-demo-app-1.0.0-fe5f67"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-libbar-0.9.1-c28b19",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-demo-app-1.0.0-fe5f67"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-libfoo-1.2.0-37ec51",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-demo-app-1.0.0-fe5f67"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-File-src-bar.c-22f3f2",
+      "relationshipType": "CONTAINS",
+      "spdxElementId": "SPDXRef-Package-libbar-0.9.1-c28b19"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-File-LICENSE-4ee9eb",
+      "relationshipType": "CONTAINS",
+      "spdxElementId": "SPDXRef-Package-libfoo-1.2.0-37ec51"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-File-include-foo.h-54c184",
+      "relationshipType": "CONTAINS",
+      "spdxElementId": "SPDXRef-Package-libfoo-1.2.0-37ec51"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-File-src-foo.c-925486",
+      "relationshipType": "CONTAINS",
+      "spdxElementId": "SPDXRef-Package-libfoo-1.2.0-37ec51"
+    }
+  ],
+  "spdxVersion": "SPDX-2.3"
+}

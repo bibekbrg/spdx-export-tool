@@ -11,8 +11,12 @@
       "version": "2.0.0"
     },
     {
-      "id": "pkg-libfoo",
-      "name": "libfoo-duplicate"
+      "id": "pkg-dup",
+      "name": "dup-one"
+    },
+    {
+      "id": "pkg-dup",
+      "name": "dup-two"
     }
   ],
   "files": [

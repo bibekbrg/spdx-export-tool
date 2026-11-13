@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "spdx-export-tool"
 version = "0.1.0"
@@ -6,6 +10,15 @@ readme = "README.md"
 requires-python = ">=3.10"
 authors = [{ name = "Bibek Roy" }]
 dependencies = ["jsonschema"]
+
+[project.scripts]
+spdx-export = "spdx_export.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+spdx_export = ["schemas/*.json"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

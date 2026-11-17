@@ -102,9 +102,11 @@ def build_document(
         targets.add(r.to_id)
     for sid, owner in file_owner.items():
         relationships.append(_rel(owner, "CONTAINS", sid))
-    for p in scan.packages:
-        if p.id not in targets:  # top-level packages
-            relationships.append(_rel("SPDXRef-DOCUMENT", "DESCRIBES", pkg_ids[p.id]))
+    top_level = [p for p in scan.packages if p.id not in targets]
+    if not top_level:  # everything depends on something (a loop): describe all packages
+        top_level = scan.packages
+    for p in top_level:
+        relationships.append(_rel("SPDXRef-DOCUMENT", "DESCRIBES", pkg_ids[p.id]))
 
     document = {
         "spdxVersion": "SPDX-2.3",

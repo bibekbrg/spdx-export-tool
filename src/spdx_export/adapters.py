@@ -10,9 +10,10 @@ import json
 import re
 from pathlib import Path
 
-from .model import ERROR, Diagnostic, File, Package, Relationship, ScanData
+from .model import ERROR, INFO, WARNING, Diagnostic, File, Package, Relationship, ScanData
 
 ALLOWED_RELATIONSHIPS = {"DEPENDS_ON", "CONTAINS"}
+REQUIRED_CSV_COLUMNS = ("package_id", "package_name")
 SHA1_PATTERN = re.compile(r"^[0-9a-fA-F]{40}$")
 
 
@@ -39,7 +40,8 @@ def file_sha256(path: str | Path) -> str:
 # ---------------------------------------------------------------- JSON
 
 def load_json(path: str | Path) -> ScanData:
-    with open(path, encoding="utf-8") as f:
+    # utf-8-sig also accepts files saved with a BOM (common from Windows tools)
+    with open(path, encoding="utf-8-sig") as f:
         try:
             data = json.load(f)
         except json.JSONDecodeError as e:
@@ -47,6 +49,14 @@ def load_json(path: str | Path) -> ScanData:
 
     if not isinstance(data, dict):
         return ScanData(diagnostics=[Diagnostic(ERROR, "file", "-", "top level must be a JSON object")])
+
+    wrong_type = [
+        Diagnostic(ERROR, key, "-", f"'{key}' must be a list")
+        for key in ("packages", "files", "relationships")
+        if key in data and not isinstance(data[key], list)
+    ]
+    if wrong_type:
+        return ScanData(diagnostics=wrong_type)
 
     return build_scan(
         document_name=data.get("document_name"),
@@ -60,8 +70,19 @@ def load_json(path: str | Path) -> ScanData:
 
 def load_csv(path: str | Path) -> ScanData:
     """CSV has one row per file; package details repeat on each row."""
-    with open(path, encoding="utf-8", newline="") as f:
-        rows = list(csv.DictReader(f))
+    with open(path, encoding="utf-8-sig", newline="") as f:
+        try:
+            reader = csv.DictReader(f)
+            # tolerate header spacing/case, e.g. " Package_ID "
+            reader.fieldnames = [(h or "").strip().lower() for h in (reader.fieldnames or [])]
+            rows = list(reader)
+        except csv.Error as e:
+            return ScanData(diagnostics=[Diagnostic(ERROR, "file", "-", f"invalid CSV: {e}")])
+
+    missing_cols = [c for c in REQUIRED_CSV_COLUMNS if c not in reader.fieldnames]
+    if missing_cols:
+        return ScanData(diagnostics=[Diagnostic(
+            ERROR, "header", "-", f"missing required column(s): {', '.join(missing_cols)}")])
 
     raw_packages: dict[str, dict] = {}
     raw_files: list[dict] = []
@@ -199,9 +220,73 @@ def build_scan(document_name, raw_packages, raw_files, raw_relationships) -> Sca
         if src == dst:
             diags.append(Diagnostic(ERROR, loc, "-", f"package '{src}' cannot relate to itself"))
             continue
-        scan.relationships.append(Relationship(src, rtype, dst))
+        rel = Relationship(src, rtype, dst)
+        if rel in scan.relationships:
+            diags.append(Diagnostic(INFO, loc, "-", f"duplicate {rtype} {src} -> {dst} ignored"))
+            continue
+        scan.relationships.append(rel)
 
+    _check_duplicate_files(scan)
+    _check_cycles(scan)
     return scan
+
+
+def _check_duplicate_files(scan: ScanData) -> None:
+    """Same file listed twice: identical copies are merged, conflicting ones rejected."""
+    seen: dict[tuple, File] = {}
+    kept: list[File] = []
+    for f in scan.files:
+        key = (f.package_id, f.path)
+        if key not in seen:
+            seen[key] = f
+            kept.append(f)
+        elif seen[key].sha1 == f.sha1:
+            scan.diagnostics.append(Diagnostic(INFO, f"{f.package_id}:{f.path}", "path", "duplicate file entry merged"))
+        else:
+            scan.diagnostics.append(Diagnostic(ERROR, f"{f.package_id}:{f.path}", "sha1",
+                                               "same file listed twice with different SHA1"))
+    scan.files = kept
+
+
+def _check_cycles(scan: ScanData) -> None:
+    """Find loops like A -> B -> A.
+
+    A CONTAINS loop is impossible in reality (a box can't be inside itself) -> ERROR.
+    A DEPENDS_ON loop can happen in real projects but is worth flagging -> WARNING.
+    """
+    for rtype, severity in (("CONTAINS", ERROR), ("DEPENDS_ON", WARNING)):
+        graph: dict[str, list[str]] = {}
+        for r in scan.relationships:
+            if r.type == rtype:
+                graph.setdefault(r.from_id, []).append(r.to_id)
+        for cycle in find_cycles(graph):
+            path = " -> ".join(cycle + [cycle[0]])
+            scan.diagnostics.append(Diagnostic(severity, "relationships", rtype, f"circular {rtype}: {path}"))
+
+
+def find_cycles(graph: dict[str, list[str]]) -> list[list[str]]:
+    """Return each loop once, rotated to start at its smallest id (deterministic order)."""
+    found: set[tuple] = set()
+    state: dict[str, int] = {}  # 1 = on current path, 2 = finished
+    path: list[str] = []
+
+    def visit(node: str) -> None:
+        state[node] = 1
+        path.append(node)
+        for nxt in sorted(graph.get(node, [])):
+            if state.get(nxt) == 1:
+                loop = path[path.index(nxt):]
+                start = loop.index(min(loop))
+                found.add(tuple(loop[start:] + loop[:start]))
+            elif state.get(nxt) is None:
+                visit(nxt)
+        path.pop()
+        state[node] = 2
+
+    for node in sorted(graph):
+        if node not in state:
+            visit(node)
+    return [list(c) for c in sorted(found)]
 
 
 def normalize_path(path: str) -> str:

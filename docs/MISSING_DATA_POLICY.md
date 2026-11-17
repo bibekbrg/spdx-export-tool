@@ -46,14 +46,19 @@ The main rule of this tool: **never make up data.** When a value is missing, the
 |---|---|
 | `from` or `to` missing, or points to an unknown id | **Error** (orphaned reference) |
 | `type` not `DEPENDS_ON` / `CONTAINS` | **Error** |
-| A package depends on itself, or a `CONTAINS` loop | **Error** (illegal cycle) |
+| A package relates to itself | **Error** |
+| `CONTAINS` loop (A contains B, B contains A) | **Error**: impossible in reality |
+| `DEPENDS_ON` loop (A → B → C → A) | **Warning**: happens in real projects, so it's exported but flagged |
+| Same relationship listed twice | **Info**: duplicate ignored |
 
 ### Invalid values (present but wrong)
 | Problem | Result |
 |---|---|
 | `sha1` not 40 hex characters | **Error** |
-| License is not a valid SPDX license ID/expression | **Warning** for now; final rule depends on mentor's decision about custom licenses |
+| License is not a valid SPDX license ID/expression | Copied as given for now; checking against the SPDX License List depends on the mentor's decision about custom licenses |
 | Duplicate package `id` | **Error**, both records rejected |
+| Same file (package + path) listed twice with the same SHA1 | **Info**, merged into one |
+| Same file listed twice with different SHA1 | **Error** |
 
 ---
 

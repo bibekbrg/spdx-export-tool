@@ -10,19 +10,28 @@ It maps scan results (packages, files, licenses, checksums, relationships) into 
 
 ## Status
 
-🚧 **Week 3: Integration (in progress)**: working CLI, official schema validation, gap report, CI. 41 tests passing, 94% coverage.
+✅ **All 4 weeks of must-haves done.** 65 tests passing · 95% coverage · 1,000 files in ~0.15 s · 100% schema-valid output.
 
 | Week | Focus | Status |
 |---|---|---|
 | 1 | SPDX version, input format, field mapping, missing-data policy, sample files, repo setup | ✅ |
 | 2 | Data model, input adapters, JSON serializer, SPDXID generator, unit tests | ✅ |
-| 3 | Schema validation, gap report, CLI, GitHub Actions | ✅ core done |
-| 4 | More tests (≥85% coverage), performance check, docs, demo | ⏳ |
+| 3 | Schema validation, gap report, circular-dependency check, CLI, GitHub Actions | ✅ |
+| 4 | Edge-case tests, ≥85% coverage, performance test, user guide, demo | ✅ |
+
+| PRD success metric | Target | Result |
+|---|---|---|
+| SPDX 2.3 schema conformance | 100% | 100% |
+| Test coverage | ≥ 85% | 95% |
+| 1,000 files + 50 packages | < 3.0 s | ~0.15 s |
+| Fabricated values | 0 | 0 |
+
+Details: [docs/TESTING.md](docs/TESTING.md)
 
 ## Quick demo (Windows)
 
-Double-click **`demo.bat`**. It sets itself up on the first run, then shows 4 live cases:
-valid JSON → SPDX created · same data as CSV · missing fields → NOASSERTION + gap report · broken scan → refused with every error listed.
+Double-click **`demo.bat`**. It sets itself up on the first run, then shows 5 live cases:
+valid JSON → SPDX created · same data as CSV · missing fields → NOASSERTION + gap report · broken scan → refused with every error listed · speed test with 1,000 files.
 
 ## Setup
 
@@ -76,6 +85,8 @@ Tests also run automatically on every push (GitHub Actions, Python 3.10 and 3.12
 
 | Document | What's in it |
 |---|---|
+| [User guide](docs/USER_GUIDE.md) | Install, every option, exit codes, gap report, troubleshooting |
+| [Testing](docs/TESTING.md) | Test results, edge cases, performance |
 | [Architecture](docs/ARCHITECTURE.md) | Project overview, tech stack, folder structure, workflow diagram |
 | [Input format](docs/INPUT_FORMAT.md) | What the JSON/CSV scan file must look like |
 | [Field mapping](docs/FIELD_MAPPING.md) | How each input field becomes an SPDX 2.3 field |
@@ -93,6 +104,7 @@ src/spdx_export/
   serializer.py  write stable, pretty UTF-8 JSON
   validator.py   check against the official SPDX 2.3 JSON schema
   cli.py         the spdx-export command
+  benchmark.py   speed test (spdx-export-benchmark)
   pipeline.py    the steps in order, for use from Python
   schemas/       official SPDX 2.3 JSON schema (from github.com/spdx/spdx-spec)
 tests/           pytest tests

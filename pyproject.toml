@@ -13,6 +13,7 @@ dependencies = ["jsonschema"]
 
 [project.scripts]
 spdx-export = "spdx_export.cli:main"
+spdx-export-benchmark = "spdx_export.benchmark:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

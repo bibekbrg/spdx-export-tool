@@ -14,12 +14,13 @@ dependencies = ["jsonschema"]
 [project.scripts]
 spdx-export = "spdx_export.cli:main"
 spdx-export-benchmark = "spdx_export.benchmark:main"
+spdx-export-web = "spdx_export.web:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
-spdx_export = ["schemas/*.json"]
+spdx_export = ["schemas/*.json", "webui/*.html"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

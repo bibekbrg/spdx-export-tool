@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SPDX Export Tool</title>
+<style>
+  :root {
+    --bg: #f4f6fa; --card: #ffffff; --ink: #14213d; --muted: #5b6577; --line: #e2e6ee;
+    --brand: #1f3c88; --brand-2: #2f5bd3;
+    --ok: #1b8a4b; --ok-bg: #e7f6ee; --warn: #b26a00; --warn-bg: #fff4e0; --err: #c62828; --err-bg: #fdecec;
+    --info: #3b5b9a; --info-bg: #eaf0fb; --mono: Consolas, "Cascadia Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, Arial, sans-serif; background: var(--bg); color: var(--ink); }
+  header { background: linear-gradient(120deg, #13285e, var(--brand) 55%, var(--brand-2)); color: #fff; padding: 22px 32px; }
+  header h1 { margin: 0; font-size: 24px; letter-spacing: .2px; }
+  header p { margin: 4px 0 0; opacity: .85; font-size: 14px; }
+  header .tag { display: inline-block; margin-left: 10px; font-size: 12px; padding: 2px 8px; border-radius: 10px; background: rgba(255,255,255,.18); vertical-align: middle; }
+  main { max-width: 1180px; margin: 0 auto; padding: 22px 24px 60px; display: grid; gap: 18px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; box-shadow: 0 1px 2px rgba(20,33,61,.04); }
+  h2 { font-size: 16px; margin: 0 0 12px; }
+  .muted { color: var(--muted); font-size: 13px; }
+
+  /* input */
+  .input-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 18px; }
+  .drop { border: 2px dashed #b8c3da; border-radius: 10px; padding: 26px; text-align: center; cursor: pointer; transition: .15s; background: #fafbfe; }
+  .drop:hover, .drop.over { border-color: var(--brand-2); background: #eef3ff; }
+  .drop strong { display: block; font-size: 15px; margin-bottom: 4px; }
+  .samples { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  button { font: inherit; border: 1px solid var(--line); background: #fff; color: var(--ink); padding: 8px 14px; border-radius: 8px; cursor: pointer; }
+  button:hover { border-color: var(--brand-2); color: var(--brand-2); }
+  button.primary { background: var(--brand); border-color: var(--brand); color: #fff; }
+  button.primary:hover { background: var(--brand-2); color: #fff; }
+  .s-ok::before { content: "● "; color: var(--ok); } .s-warn::before { content: "● "; color: var(--warn); } .s-err::before { content: "● "; color: var(--err); }
+
+  /* result */
+  .banner { border-radius: 10px; padding: 14px 18px; display: flex; gap: 14px; align-items: center; }
+  .banner .icon { font-size: 26px; line-height: 1; }
+  .banner h3 { margin: 0; font-size: 17px; } .banner p { margin: 3px 0 0; font-size: 13px; }
+  .banner.ok { background: var(--ok-bg); color: var(--ok); } .banner.warn { background: var(--warn-bg); color: var(--warn); } .banner.err { background: var(--err-bg); color: var(--err); }
+  .tiles { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-top: 14px; }
+  .tile { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  .tile b { display: block; font-size: 22px; } .tile span { font-size: 12px; color: var(--muted); }
+  .tile.err b { color: var(--err); } .tile.warn b { color: var(--warn); } .tile.ok b { color: var(--ok); }
+
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin: 16px 0 14px; }
+  .tabs button { border: none; border-bottom: 2px solid transparent; border-radius: 0; padding: 8px 14px; color: var(--muted); }
+  .tabs button.active { color: var(--brand); border-bottom-color: var(--brand); font-weight: 600; }
+  .tabs button:disabled { opacity: .4; cursor: default; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 7px 9px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .3px; }
+  code, .mono { font-family: var(--mono); font-size: 12px; }
+  .chip { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; }
+  .chip.ERROR { background: var(--err-bg); color: var(--err); } .chip.WARNING { background: var(--warn-bg); color: var(--warn); } .chip.INFO { background: var(--info-bg); color: var(--info); }
+  .na { background: var(--warn-bg); color: var(--warn); padding: 0 5px; border-radius: 4px; }
+
+  .pkg { border: 1px solid var(--line); border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+  .pkg summary { list-style: none; cursor: pointer; padding: 12px 14px; display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+  .pkg summary::-webkit-details-marker { display: none; }
+  .pkg summary .name { font-weight: 600; font-size: 15px; }
+  .pkg summary .meta { font-size: 12px; color: var(--muted); }
+  .pkg .body { padding: 0 14px 12px; }
+  .kv { display: grid; grid-template-columns: 170px 1fr; gap: 4px 12px; font-size: 13px; margin: 4px 0 10px; }
+  .kv div:nth-child(odd) { color: var(--muted); }
+
+  .filters { display: flex; gap: 6px; margin-bottom: 10px; }
+  .filters button { padding: 4px 10px; font-size: 12px; } .filters button.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  pre { background: #0f1b33; color: #dbe6ff; padding: 14px; border-radius: 10px; max-height: 480px; overflow: auto; font-family: var(--mono); font-size: 12px; margin: 0; }
+  .row { display: flex; gap: 8px; margin-bottom: 10px; }
+
+  .bar { height: 12px; background: #e9edf5; border-radius: 6px; overflow: hidden; margin: 6px 0 4px; }
+  .bar div { height: 100%; background: var(--ok); }
+  .why { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .why div { border-left: 3px solid var(--brand-2); padding: 4px 10px; font-size: 13px; }
+  .why b { display: block; margin-bottom: 3px; }
+  .hidden { display: none !important; }
+  .spinner { color: var(--muted); font-size: 14px; }
+  @media (max-width: 860px) { .input-grid, .why { grid-template-columns: 1fr; } .tiles { grid-template-columns: repeat(3, 1fr); } }
+</style>
+</head>
+<body>
+<header>
+  <h1>SPDX Export Tool <span class="tag" id="ver">v</span></h1>
+  <p>Converts compliance scan results (JSON / CSV) into a validated SPDX 2.3 SBOM, without ever making up missing data.</p>
+</header>
+
+<main>
+  <section class="card">
+    <h2>1. Choose a scan file</h2>
+    <div class="input-grid">
+      <div>
+        <div class="drop" id="drop">
+          <strong>Drop a .json or .csv scan file here</strong>
+          <span class="muted">or click to browse</span>
+          <input type="file" id="file" accept=".json,.csv" hidden>
+        </div>
+      </div>
+      <div>
+        <div class="muted">Or try a sample input:</div>
+        <div class="samples" id="samples"></div>
+        <div class="muted" style="margin-top:14px">Performance check:</div>
+        <div class="samples"><button id="speedBtn">⚡ Speed test: 1,000 files</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card hidden" id="resultCard">
+    <h2>2. Result: <span id="inputName" class="mono"></span></h2>
+    <div id="banner" class="banner"></div>
+    <div class="tiles" id="tiles"></div>
+    <div class="tabs" id="tabs">
+      <button data-tab="packages">Packages &amp; files</button>
+      <button data-tab="relationships">Relationships</button>
+      <button data-tab="gaps">Gap report</button>
+      <button data-tab="json">SPDX JSON</button>
+    </div>
+    <div id="tab-packages"></div>
+    <div id="tab-relationships"></div>
+    <div id="tab-gaps"></div>
+    <div id="tab-json"></div>
+  </section>
+
+  <section class="card hidden" id="speedCard">
+    <h2>Speed test</h2>
+    <div id="speed"></div>
+  </section>
+
+  <section class="card">
+    <h2>Why this tool, and not just AI?</h2>
+    <div class="why">
+      <div><b>Never guesses</b>Unknown values become NOASSERTION; missing required data is an error. AI can invent a license or checksum.</div>
+      <div><b>Same output every time</b>Deterministic IDs and ordering, so results can be audited and compared between releases.</div>
+      <div><b>Officially validated</b>Every file is checked against the official SPDX 2.3 JSON schema before it is saved.</div>
+      <div><b>Traceable, offline, fast</b>Every value traces back to the scan. Runs locally; 1,000 files in well under a second.</div>
+    </div>
+  </section>
+</main>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const NA = new Set(["NOASSERTION", "NONE"]);
+
+function h(tag, attrs = {}, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") e.className = v; else if (k.startsWith("on")) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v);
+  }
+  for (const k of kids.flat()) e.append(k instanceof Node ? k : document.createTextNode(k ?? ""));
+  return e;
+}
+const val = (v) => (v == null ? h("span", { class: "muted" }, "-") : NA.has(v) ? h("span", { class: "na" }, v) : String(v));
+
+async function post(url, body) {
+  const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  const data = await r.json();
+  if (!r.ok) throw new Error(data.error || r.statusText);
+  return data;
+}
+
+async function init() {
+  const info = await (await fetch("/api/info")).json();
+  $("#ver").textContent = "v" + info.version;
+  const cls = { "valid_scan.json": "s-ok", "valid_scan.csv": "s-ok", "missing_fields_scan.json": "s-warn", "broken_scan.json": "s-err" };
+  for (const s of info.samples)
+    $("#samples").append(h("button", { class: cls[s.name] || "", onclick: () => convert({ sample: s.name }) }, s.label));
+}
+
+// ---------------------------------------------------------------- input
+const drop = $("#drop"), fileInput = $("#file");
+drop.addEventListener("click", () => fileInput.click());
+fileInput.addEventListener("change", () => fileInput.files[0] && readFile(fileInput.files[0]));
+["dragenter", "dragover"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", (e) => e.dataTransfer.files[0] && readFile(e.dataTransfer.files[0]));
+
+function readFile(f) {
+  const reader = new FileReader();
+  reader.onload = () => convert({ filename: f.name, content: reader.result });
+  reader.readAsText(f);
+  fileInput.value = "";
+}
+
+async function convert(body) {
+  const card = $("#resultCard");
+  card.classList.remove("hidden");
+  $("#banner").className = "banner"; $("#banner").replaceChildren(h("span", { class: "spinner" }, "Converting…"));
+  try { render(await post("/api/convert", body)); }
+  catch (err) { showBanner("err", "✖", "Could not read this file", err.message); $("#tiles").replaceChildren(); }
+  card.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// ---------------------------------------------------------------- result
+function showBanner(kind, icon, title, text) {
+  $("#banner").className = "banner " + kind;
+  $("#banner").replaceChildren(h("div", { class: "icon" }, icon), h("div", {}, h("h3", {}, title), h("p", {}, text)));
+}
+
+function render(r) {
+  $("#inputName").textContent = r.input;
+  const g = r.gaps;
+  if (r.ok && g.WARNING === 0) showBanner("ok", "✔", "Valid SPDX 2.3 document", "Passed the official SPDX 2.3 JSON schema. Nothing was missing.");
+  else if (r.ok) showBanner("warn", "⚠", `Valid SPDX 2.3 document, with ${g.WARNING} gap warning(s)`, "Unknown values were written as NOASSERTION, never guessed. See the gap report.");
+  else {
+    const stage = { input: "the input has errors", mapping: "mapping failed", schema: "the output failed the official schema" }[r.failed_stage];
+    showBanner("err", "✖", `Refused: ${stage}`, `${g.ERROR} error(s) found. No SPDX file was created, because nothing is guessed.`);
+  }
+
+  const tile = (n, label, kind = "") => h("div", { class: "tile " + kind }, h("b", {}, String(n)), h("span", {}, label));
+  $("#tiles").replaceChildren(
+    tile(r.counts.packages, "Packages"), tile(r.counts.files, "Files"), tile(r.counts.relationships, "Relationships"),
+    tile(g.ERROR, "Errors", g.ERROR ? "err" : ""), tile(g.WARNING, "Warnings", g.WARNING ? "warn" : ""),
+    tile(r.ok ? "Valid" : "-", "SPDX 2.3 schema", r.ok ? "ok" : ""));
+
+  renderPackages(r.document);
+  renderRelationships(r.document);
+  renderGaps(r.diagnostics);
+  renderJson(r);
+  const tabs = $("#tabs").querySelectorAll("button");
+  tabs.forEach((b) => (b.disabled = !r.document && b.dataset.tab !== "gaps"));
+  showTab(r.document ? "packages" : "gaps");
+}
+
+function showTab(name) {
+  document.querySelectorAll("#tabs button").forEach((b) => b.classList.toggle("active", b.dataset.tab === name));
+  ["packages", "relationships", "gaps", "json"].forEach((t) => $("#tab-" + t).classList.toggle("hidden", t !== name));
+}
+$("#tabs").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b && !b.disabled) showTab(b.dataset.tab); });
+
+function renderPackages(doc) {
+  const box = $("#tab-packages");
+  box.replaceChildren();
+  if (!doc) return;
+  const filesById = Object.fromEntries(doc.files.map((f) => [f.SPDXID, f]));
+  const contains = {};
+  for (const r of doc.relationships) if (r.relationshipType === "CONTAINS" && filesById[r.relatedSpdxElement])
+    (contains[r.spdxElementId] ||= []).push(filesById[r.relatedSpdxElement]);
+
+  for (const p of doc.packages) {
+    const files = contains[p.SPDXID] || [];
+    const vc = p.packageVerificationCode ? p.packageVerificationCode.packageVerificationCodeValue : null;
+    const body = h("div", { class: "body" },
+      h("div", { class: "kv" },
+        h("div", {}, "SPDXID"), h("div", { class: "mono" }, p.SPDXID),
+        h("div", {}, "Supplier"), h("div", {}, val(p.supplier)),
+        h("div", {}, "Download location"), h("div", {}, val(p.downloadLocation)),
+        h("div", {}, "License declared"), h("div", {}, val(p.licenseDeclared)),
+        h("div", {}, "License concluded"), h("div", {}, val(p.licenseConcluded)),
+        h("div", {}, "Copyright"), h("div", {}, val(p.copyrightText)),
+        h("div", {}, "Verification code"), h("div", { class: "mono" }, vc || "- (no files analysed)")),
+      files.length ? h("table", {},
+        h("tr", {}, h("th", {}, "File"), h("th", {}, "License found"), h("th", {}, "License concluded"), h("th", {}, "SHA1")),
+        files.map((f) => h("tr", {}, h("td", { class: "mono" }, f.fileName), h("td", {}, val(f.licenseInfoInFiles.join(", "))),
+          h("td", {}, val(f.licenseConcluded)), h("td", { class: "mono", title: f.checksums[0].checksumValue }, f.checksums[0].checksumValue.slice(0, 12) + "…"))))
+        : h("div", { class: "muted" }, "No files listed for this package."));
+    box.append(h("details", { class: "pkg", open: "" },
+      h("summary", {}, h("span", {}, h("span", { class: "name" }, p.name + " "), h("span", { class: "meta" }, p.versionInfo ? "v" + p.versionInfo : "version not given")),
+        h("span", { class: "meta" }, `${files.length} file(s) · ${p.licenseDeclared}`)), body));
+  }
+}
+
+function renderRelationships(doc) {
+  const box = $("#tab-relationships");
+  box.replaceChildren();
+  if (!doc) return;
+  const names = { "SPDXRef-DOCUMENT": "This document" };
+  doc.packages.forEach((p) => (names[p.SPDXID] = `${p.name}${p.versionInfo ? " " + p.versionInfo : ""}`));
+  doc.files.forEach((f) => (names[f.SPDXID] = f.fileName));
+  const order = { DESCRIBES: 0, DEPENDS_ON: 1, CONTAINS: 2 };
+  const rels = [...doc.relationships].sort((a, b) => order[a.relationshipType] - order[b.relationshipType]);
+  box.append(h("p", { class: "muted" }, "Read each row as a sentence: A — relationship → B."),
+    h("table", {}, h("tr", {}, h("th", {}, "A"), h("th", {}, "Relationship"), h("th", {}, "B")),
+      rels.map((r) => h("tr", {}, h("td", {}, names[r.spdxElementId] || r.spdxElementId),
+        h("td", {}, h("code", {}, r.relationshipType)), h("td", {}, names[r.relatedSpdxElement] || r.relatedSpdxElement)))));
+}
+
+let gapFilter = "ALL";
+function renderGaps(diags) {
+  const box = $("#tab-gaps");
+  const draw = () => {
+    const rows = diags.filter((d) => gapFilter === "ALL" || d.severity === gapFilter);
+    const counts = (s) => diags.filter((d) => d.severity === s).length;
+    const btn = (k, label) => h("button", { class: gapFilter === k ? "active" : "", onclick: () => { gapFilter = k; draw(); } }, label);
+    box.replaceChildren(
+      h("div", { class: "filters" }, btn("ALL", `All (${diags.length})`), btn("ERROR", `Errors (${counts("ERROR")})`),
+        btn("WARNING", `Warnings (${counts("WARNING")})`), btn("INFO", `Info (${counts("INFO")})`)),
+      rows.length ? h("table", {}, h("tr", {}, h("th", {}, "Severity"), h("th", {}, "Where"), h("th", {}, "Field"), h("th", {}, "Message")),
+        rows.map((d) => h("tr", {}, h("td", {}, h("span", { class: "chip " + d.severity }, d.severity)),
+          h("td", { class: "mono" }, d.location), h("td", { class: "mono" }, d.field), h("td", {}, d.message))))
+        : h("p", { class: "muted" }, diags.length ? "Nothing in this category." : "No gaps: every field was present in the scan."));
+  };
+  gapFilter = "ALL";
+  draw();
+}
+
+function renderJson(r) {
+  const box = $("#tab-json");
+  box.replaceChildren();
+  if (!r.spdx_text) return;
+  const name = r.input.replace(/\.(json|csv)$/i, "") + ".spdx.json";
+  const download = () => {
+    const a = h("a", { href: URL.createObjectURL(new Blob([r.spdx_text], { type: "application/json" })), download: name });
+    document.body.append(a); a.click(); a.remove();
+  };
+  const copy = async (e) => { await navigator.clipboard.writeText(r.spdx_text); e.target.textContent = "Copied ✔"; };
+  box.append(h("div", { class: "row" }, h("button", { class: "primary", onclick: download }, "⬇ Download " + name),
+    h("button", { onclick: copy }, "Copy JSON")), h("pre", {}, r.spdx_text));
+}
+
+// ---------------------------------------------------------------- speed test
+$("#speedBtn").addEventListener("click", async () => {
+  const card = $("#speedCard"), out = $("#speed");
+  card.classList.remove("hidden");
+  out.replaceChildren(h("span", { class: "spinner" }, "Generating 50 packages and 1,000 files, then running the full pipeline…"));
+  card.scrollIntoView({ behavior: "smooth", block: "start" });
+  try {
+    const s = await post("/api/speed-test", {});
+    const pct = Math.max(1, Math.min(100, (s.total / s.target) * 100));
+    out.replaceChildren(
+      h("div", { class: "banner " + (s.passed ? "ok" : "err") }, h("div", { class: "icon" }, s.passed ? "⚡" : "✖"),
+        h("div", {}, h("h3", {}, `${s.files.toLocaleString()} files and ${s.packages} packages in ${s.total.toFixed(3)} s`),
+          h("p", {}, `PRD target: under ${s.target.toFixed(1)} s. ${s.passed ? "PASS, about " + Math.round(s.target / s.total) + "× faster than needed." : "FAIL"}`))),
+      h("div", { class: "bar" }, h("div", { style: `width:${pct}%` })),
+      h("div", { class: "muted" }, `Used ${pct.toFixed(1)}% of the time budget`),
+      h("table", { style: "margin-top:10px" }, h("tr", {}, h("th", {}, "Step"), h("th", {}, "Time")),
+        Object.entries(s.steps).map(([k, v]) => h("tr", {}, h("td", {}, k), h("td", { class: "mono" }, v.toFixed(3) + " s")))));
+  } catch (err) { out.replaceChildren(h("p", {}, "Speed test failed: " + err.message)); }
+});
+
+init();
+</script>
+</body>
+</html>

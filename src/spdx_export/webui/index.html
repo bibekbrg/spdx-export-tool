@@ -99,7 +99,7 @@
 </head>
 <body>
 <header>
-  <h1>SPDX Export Tool <span class="tag" id="ver">v</span></h1>
+  <h1>SPDX Export Tool</h1>
   <p>Converts compliance scan results (JSON / CSV) into a validated SPDX 2.3 SBOM, without ever making up missing data.</p>
 </header>
 
@@ -178,7 +178,6 @@ async function post(url, body) {
 
 async function init() {
   const info = await (await fetch("/api/info")).json();
-  $("#ver").textContent = "v" + info.version;
   const cls = { "valid_scan.json": "s-ok", "valid_scan.csv": "s-ok", "missing_fields_scan.json": "s-warn", "broken_scan.json": "s-err" };
   for (const s of info.samples)
     $("#samples").append(h("button", { class: cls[s.name] || "", onclick: () => convert({ sample: s.name }) }, s.label));

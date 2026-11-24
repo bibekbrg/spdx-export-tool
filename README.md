@@ -10,7 +10,7 @@ It maps scan results (packages, files, licenses, checksums, relationships) into 
 
 ## Status
 
-✅ **All 4 weeks of must-haves done.** 65 tests passing · 95% coverage · 1,000 files in ~0.15 s · 100% schema-valid output.
+✅ **All 4 weeks of must-haves done.** 76 tests passing · 91% coverage · 1,000 files in ~0.15 s · 100% schema-valid output.
 
 | Week | Focus | Status |
 |---|---|---|
@@ -22,11 +22,15 @@ It maps scan results (packages, files, licenses, checksums, relationships) into 
 | PRD success metric | Target | Result |
 |---|---|---|
 | SPDX 2.3 schema conformance | 100% | 100% |
-| Test coverage | ≥ 85% | 95% |
+| Test coverage | ≥ 85% | 91% |
 | 1,000 files + 50 packages | < 3.0 s | ~0.15 s |
 | Fabricated values | 0 | 0 |
 
 Details: [docs/TESTING.md](docs/TESTING.md)
+
+## Web preview (Windows)
+
+Double-click **`web.bat`**. Your browser opens **http://127.0.0.1:8000**: drop in a JSON/CSV scan or click a sample to see the result, package tree, relationships, gap report and SPDX JSON (with download), plus a one-click 1,000-file speed test. Or run `spdx-export-web`.
 
 ## Quick demo (Windows)
 
@@ -105,12 +109,15 @@ src/spdx_export/
   validator.py   check against the official SPDX 2.3 JSON schema
   cli.py         the spdx-export command
   benchmark.py   speed test (spdx-export-benchmark)
+  web.py         local web preview (spdx-export-web)
+  webui/         the web page
   pipeline.py    the steps in order, for use from Python
   schemas/       official SPDX 2.3 JSON schema (from github.com/spdx/spdx-spec)
 tests/           pytest tests
 samples/         sample scan inputs + expected output
 docs/            design documents
-demo.bat         one-click live demo
+demo.bat         one-click live demo (terminal)
+web.bat          one-click web preview (browser)
 ```
 
 ## Tech stack

@@ -95,7 +95,9 @@ spdx-export-tool/
 │       ├── serializer.py     # Writes pretty, stable-ordered JSON                     (Week 2 ✅)
 │       ├── pipeline.py       # Runs the steps in order                                (Week 2 ✅)
 │       ├── validator.py      # Validates output against the SPDX 2.3 schema           (Week 3 ✅)
-│       └── cli.py            # Command-line entry point: spdx-export                  (Week 3 ✅)
+│       ├── cli.py            # Command-line entry point: spdx-export                  (Week 3 ✅)
+│       ├── web.py            # Local web preview server: spdx-export-web              (stretch ✅)
+│       └── webui/index.html  # The web page                                           (stretch ✅)
 │       └── schemas/
 │           └── spdx-schema-2.3.json  # Official SPDX 2.3 JSON schema (bundled with the package)
 ├── tests/                    # pytest unit, integration and end-to-end tests

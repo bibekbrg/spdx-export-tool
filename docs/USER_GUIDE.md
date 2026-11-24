@@ -19,7 +19,7 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-This installs two commands: `spdx-export` and `spdx-export-benchmark`.
+This installs three commands: `spdx-export`, `spdx-export-benchmark` and `spdx-export-web`.
 
 **Windows shortcut:** double-click `demo.bat`. It installs everything on the first run and shows a live demo.
 
@@ -92,7 +92,16 @@ spdx-export-benchmark --packages 200 --files-per-package 50
 
 It generates a realistic scan, runs every step of the real pipeline on both JSON and CSV versions, and prints the time per step. PRD target: under 3.0 seconds for 1,000 files. Measured: about **0.15 s**.
 
-## 6. Use from Python
+## 6. Web preview
+
+```bash
+spdx-export-web                 # opens http://127.0.0.1:8000
+spdx-export-web --port 8010     # if 8000 is busy
+```
+
+On Windows, double-click `web.bat`. Drop in a `.json` or `.csv` scan (or click a sample) to see the result banner, the package tree with files and licenses, relationships, the gap report with filters, and the SPDX JSON with a download button. The page also runs the 1,000-file speed test. It only listens on your own computer (127.0.0.1); uploads are limited to 20 MB.
+
+## 6b. Use from Python
 
 ```python
 from spdx_export.pipeline import convert

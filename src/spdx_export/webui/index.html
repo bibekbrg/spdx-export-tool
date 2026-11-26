@@ -94,37 +94,82 @@
   .why div { border-left-color: #000; }
   button:hover { border-color: #000; color: #000; }
   button.primary { background: #000; border-color: #000; } button.primary:hover { background: #333; }
-  @media (max-width: 860px) { .input-grid, .why { grid-template-columns: 1fr; } .tiles { grid-template-columns: repeat(3, 1fr); } }
+  /* ---------- v2 layout polish ---------- */
+  body { font-family: "Inter", "Segoe UI", system-ui, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  header { padding: 0; }
+  .nav { max-width: 1180px; margin: 0 auto; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
+  .logo { font-weight: 800; letter-spacing: -.3px; font-size: 17px; display: flex; gap: 10px; align-items: center; }
+  .logo .mark { width: 26px; height: 26px; border: 2px solid #fff; border-radius: 6px; display: grid; place-items: center; font-size: 13px; }
+  .nav a { color: #fff; text-decoration: none; font-size: 13px; border: 1px solid #555; padding: 6px 12px; border-radius: 999px; }
+  .nav a:hover { border-color: #fff; }
+  .hero { max-width: 1180px; margin: 0 auto; padding: 34px 24px 40px; }
+  .hero h1 { font-size: 40px; line-height: 1.1; letter-spacing: -1px; margin: 0; max-width: 760px; }
+  .hero p { font-size: 16px; opacity: .75; max-width: 680px; margin: 12px 0 0; line-height: 1.5; }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 28px; border: 1px solid #333; border-radius: 12px; overflow: hidden; }
+  .steps div { padding: 14px 16px; border-right: 1px solid #333; font-size: 13px; color: #bbb; }
+  .steps div:last-child { border-right: none; }
+  .steps b { display: block; color: #fff; font-size: 14px; margin-bottom: 2px; }
+  .steps span { display: inline-block; width: 20px; height: 20px; border: 1px solid #fff; border-radius: 50%; text-align: center; line-height: 18px; font-size: 11px; color: #fff; margin-right: 6px; }
+  main { margin-top: -18px; }
+  .card { border-radius: 14px; padding: 22px 24px; border-color: #e3e3e3; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #666; font-weight: 700; }
+  .drop { padding: 40px 20px; border-radius: 12px; min-height: 100%; display: flex; flex-direction: column; justify-content: center; }
+  .drop .ico { font-size: 30px; line-height: 1; margin-bottom: 10px; }
+  .drop strong { font-size: 17px; }
+  .sample-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+  .sample { text-align: left; padding: 12px 14px; border-radius: 10px; display: block; width: 100%; }
+  .sample b { display: block; font-size: 14px; margin-bottom: 2px; }
+  .sample small { color: #666; font-size: 12px; line-height: 1.35; display: block; }
+  .sample:hover { background: #000; color: #fff; } .sample:hover small { color: #ccc; }
+  .sample.speed { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; }
+  .label { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: .8px; font-weight: 600; }
+  .tile { padding: 14px; border-radius: 12px; } .tile b { font-size: 28px; letter-spacing: -.5px; }
+  .banner { padding: 16px 20px; border-radius: 12px; }
+  .tabs button { font-size: 14px; }
+  footer { max-width: 1180px; margin: 0 auto; padding: 10px 24px 40px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 13px; color: #666; }
+  footer a { color: #000; }
+  @media (max-width: 860px) { .input-grid, .why, .steps, .sample-grid { grid-template-columns: 1fr; } .steps div { border-right: none; border-bottom: 1px solid #333; } .tiles { grid-template-columns: repeat(3, 1fr); } .hero h1 { font-size: 30px; } }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 <header>
-  <h1>SPDX Export Tool</h1>
-  <p>Converts compliance scan results (JSON / CSV) into a validated SPDX 2.3 SBOM, without ever making up missing data.</p>
+  <div class="nav">
+    <div class="logo"><div class="mark">S</div>SPDX Export Tool</div>
+    <a href="https://github.com/bibekbrg/spdx-export-tool" target="_blank" rel="noopener">View code on GitHub ↗</a>
+  </div>
+  <div class="hero">
+    <h1>Turn scan results into a valid SPDX&nbsp;2.3 SBOM.</h1>
+    <p>Upload a scanner's JSON or CSV output. The tool builds a standard Software Bill of Materials, checks it against the official SPDX schema, and never makes up missing data.</p>
+    <div class="steps">
+      <div><b><span>1</span>Upload</b>JSON or CSV scan file</div>
+      <div><b><span>2</span>Convert</b>Mapped to SPDX 2.3, unknowns marked</div>
+      <div><b><span>3</span>Validate</b>Official SPDX schema check</div>
+      <div><b><span>4</span>Download</b>Ready-to-share SBOM file</div>
+    </div>
+  </div>
 </header>
 
 <main>
   <section class="card">
-    <h2>1. Choose a scan file</h2>
+    <h2>Choose a scan file</h2>
     <div class="input-grid">
-      <div>
-        <div class="drop" id="drop">
-          <strong>Drop a .json or .csv scan file here</strong>
-          <span class="muted">or click to browse</span>
-          <input type="file" id="file" accept=".json,.csv" hidden>
-        </div>
+      <div class="drop" id="drop">
+        <div class="ico">⇪</div>
+        <strong>Drop a .json or .csv scan file here</strong>
+        <span class="muted">or click to browse · up to 20 MB</span>
+        <input type="file" id="file" accept=".json,.csv" hidden>
       </div>
       <div>
-        <div class="muted">Or try a sample input:</div>
-        <div class="samples" id="samples"></div>
-        <div class="muted" style="margin-top:14px">Performance check:</div>
-        <div class="samples"><button id="speedBtn">&#9655; Speed test: 1,000 files</button></div>
+        <div class="label">Or try a sample</div>
+        <div class="sample-grid" id="samples"></div>
       </div>
     </div>
   </section>
 
   <section class="card hidden" id="resultCard">
-    <h2>2. Result: <span id="inputName" class="mono"></span></h2>
+    <h2>Result: <span id="inputName" class="mono"></span></h2>
     <div id="banner" class="banner"></div>
     <div class="tiles" id="tiles"></div>
     <div class="tabs" id="tabs">
@@ -154,6 +199,10 @@
     </div>
   </section>
 </main>
+<footer>
+  <span>SPDX Report Export Tool · Project G370 · Bibek Roy</span>
+  <span>Python · SPDX 2.3 · <a href="https://github.com/bibekbrg/spdx-export-tool" target="_blank" rel="noopener">GitHub</a></span>
+</footer>
 
 <script>
 const $ = (s) => document.querySelector(s);
@@ -178,9 +227,20 @@ async function post(url, body) {
 
 async function init() {
   const info = await (await fetch("/api/info")).json();
-  const cls = { "valid_scan.json": "s-ok", "valid_scan.csv": "s-ok", "missing_fields_scan.json": "s-warn", "broken_scan.json": "s-err" };
-  for (const s of info.samples)
-    $("#samples").append(h("button", { class: cls[s.name] || "", onclick: () => convert({ sample: s.name }) }, s.label));
+  const meta = {
+    "valid_scan.json": ["s-ok", "Complete scan: 3 packages, 5 files"],
+    "valid_scan.csv": ["s-ok", "Same data as a CSV table"],
+    "missing_fields_scan.json": ["s-warn", "Gaps become NOASSERTION, never guessed"],
+    "broken_scan.json": ["s-err", "Bad data is refused with every error listed"],
+  };
+  for (const s of info.samples) {
+    const [cls, desc] = meta[s.name] || ["", ""];
+    $("#samples").append(h("button", { class: "sample", onclick: () => convert({ sample: s.name }) },
+      h("b", { class: cls }, s.label), h("small", {}, desc)));
+  }
+  $("#samples").append(h("button", { class: "sample speed", id: "speedBtn", onclick: runSpeedTest },
+    h("span", {}, h("b", {}, "▷ Speed test"), h("small", {}, "Generate 1,000 files + 50 packages and time the full pipeline")),
+    h("span", { class: "label" }, "target < 3 s")));
 }
 
 // ---------------------------------------------------------------- input
@@ -325,7 +385,7 @@ function renderJson(r) {
 }
 
 // ---------------------------------------------------------------- speed test
-$("#speedBtn").addEventListener("click", async () => {
+async function runSpeedTest() {
   const card = $("#speedCard"), out = $("#speed");
   card.classList.remove("hidden");
   out.replaceChildren(h("span", { class: "spinner" }, "Generating 50 packages and 1,000 files, then running the full pipeline…"));
@@ -342,7 +402,7 @@ $("#speedBtn").addEventListener("click", async () => {
       h("table", { style: "margin-top:10px" }, h("tr", {}, h("th", {}, "Step"), h("th", {}, "Time")),
         Object.entries(s.steps).map(([k, v]) => h("tr", {}, h("td", {}, k), h("td", { class: "mono" }, v.toFixed(3) + " s")))));
   } catch (err) { out.replaceChildren(h("p", {}, "Speed test failed: " + err.message)); }
-});
+}
 
 init();
 </script>

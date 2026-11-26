@@ -9,6 +9,7 @@ Uses only the Python standard library. Listens on this computer only (127.0.0.1)
 
 import argparse
 import json
+import os
 import sys
 import tempfile
 import threading
@@ -27,7 +28,7 @@ from .serializer import to_json
 from .validator import validate
 
 MAX_UPLOAD_BYTES = 20 * 1024 * 1024
-SAMPLES_DIR = Path(__file__).resolve().parents[2] / "samples"
+SAMPLES_DIR = Path(os.environ.get("SPDX_SAMPLES_DIR") or Path(__file__).resolve().parents[2] / "samples")
 SAMPLES = {
     "valid_scan.json": "Valid JSON",
     "valid_scan.csv": "Valid CSV",
@@ -166,23 +167,27 @@ class Handler(BaseHTTPRequestHandler):
             self._json(200, analyze(path, Path(name).name))
 
 
-def make_server(port: int = 8000) -> ThreadingHTTPServer:
-    return ThreadingHTTPServer(("127.0.0.1", port), Handler)
+def make_server(port: int = 8000, host: str = "127.0.0.1") -> ThreadingHTTPServer:
+    return ThreadingHTTPServer((host, port), Handler)
 
 
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(prog="spdx-export-web", description="Local web preview for the SPDX Export Tool")
-    ap.add_argument("--port", type=int, default=8000)
+    ap = argparse.ArgumentParser(prog="spdx-export-web", description="Web preview for the SPDX Export Tool")
+    ap.add_argument("--port", type=int, default=int(os.environ.get("PORT", 8000)),
+                    help="port to listen on (default: $PORT or 8000)")
+    ap.add_argument("--host", default="127.0.0.1",
+                    help="address to listen on; use 0.0.0.0 when deploying to a server")
     ap.add_argument("--no-browser", action="store_true", help="don't open the browser automatically")
     args = ap.parse_args(argv)
 
     try:
-        server = make_server(args.port)
+        server = make_server(args.port, args.host)
     except OSError:
         print(f"Port {args.port} is busy. Try: spdx-export-web --port 8010")
         return 3
 
-    url = f"http://127.0.0.1:{server.server_address[1]}"
+    shown_host = "127.0.0.1" if args.host in ("0.0.0.0", "") else args.host
+    url = f"http://{shown_host}:{server.server_address[1]}"
     print(f"SPDX Export Tool {__version__} - web preview")
     print(f"  Open {url} in your browser")
     print("  Press Ctrl+C to stop")

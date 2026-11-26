@@ -128,6 +128,37 @@
   .tabs button { font-size: 14px; }
   footer { max-width: 1180px; margin: 0 auto; padding: 10px 24px 40px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 13px; color: #666; }
   footer a { color: #000; }
+  /* ---------- green palette: #0F1F17 #1E3A2E #3E5A3F #6B7F67 #C7CBB8 #3D4337 ---------- */
+  :root { --bg: #eef0e8; --ink: #0F1F17; --muted: #3D4337; --line: #C7CBB8; }
+  body { background: var(--bg); color: #0F1F17; }
+  header { background: radial-gradient(1200px 400px at 20% 0%, #1E3A2E, #0F1F17 70%); color: #eef0e8; border-bottom: none; }
+  .steps { border-color: #3E5A3F; } .steps div { border-color: #3E5A3F; color: #C7CBB8; }
+  .steps b, .steps span { color: #eef0e8; } .steps span { border-color: #C7CBB8; }
+  .nav a { border-color: #3E5A3F; color: #eef0e8; } .nav a:hover { border-color: #C7CBB8; background: #1E3A2E; }
+  .logo .mark { border-color: #C7CBB8; color: #C7CBB8; }
+  .card { border-color: #C7CBB8; }
+  h2, .label { color: #6B7F67; }
+  .drop { border-color: #6B7F67; background: #f6f7f1; } .drop:hover, .drop.over { border-color: #1E3A2E; background: #e6eadc; }
+  button { border-color: #C7CBB8; color: #0F1F17; }
+  button:hover { border-color: #1E3A2E; color: #1E3A2E; }
+  .sample:hover { background: #1E3A2E; color: #eef0e8; border-color: #1E3A2E; } .sample:hover small { color: #C7CBB8; }
+  .sample small { color: #3D4337; }
+  .s-ok::before, .s-warn::before, .s-err::before { color: #3E5A3F; }
+  .banner.ok { background: #e6eadc; color: #1E3A2E; border: 2px solid #3E5A3F; }
+  .banner.warn { background: #f4f2e6; color: #3D4337; border: 2px dashed #6B7F67; }
+  .banner.err { background: #0F1F17; color: #eef0e8; border: 2px solid #0F1F17; }
+  .tile { border-color: #C7CBB8; } .tile b { color: #0F1F17; } .tile.ok b { color: #3E5A3F; }
+  .tile.err { border-color: #0F1F17; }
+  .tabs { border-color: #C7CBB8; } .tabs button.active { color: #1E3A2E; border-bottom-color: #1E3A2E; }
+  .chip.ERROR { background: #0F1F17; color: #eef0e8; } .chip.WARNING { border-color: #6B7F67; color: #3D4337; }
+  .na { border-color: #6B7F67; color: #3E5A3F; background: #f4f2e6; }
+  .filters button.active { background: #1E3A2E; border-color: #1E3A2E; color: #eef0e8; }
+  button.primary { background: #1E3A2E; border-color: #1E3A2E; color: #eef0e8; } button.primary:hover { background: #3E5A3F; color: #eef0e8; }
+  .bar { background: #C7CBB8; } .bar div { background: #3E5A3F; }
+  pre { background: #0F1F17; color: #C7CBB8; }
+  .why div { border-left-color: #3E5A3F; }
+  th { color: #6B7F67; } td, th { border-color: #dfe2d4; }
+  footer, footer a { color: #3D4337; }
   @media (max-width: 860px) { .input-grid, .why, .steps, .sample-grid { grid-template-columns: 1fr; } .steps div { border-right: none; border-bottom: 1px solid #333; } .tiles { grid-template-columns: repeat(3, 1fr); } .hero h1 { font-size: 30px; } }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">

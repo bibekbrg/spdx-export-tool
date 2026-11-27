@@ -281,6 +281,14 @@
   .loader { color: #C7CBB8; } .loader i { border-color: rgba(199,203,184,.2); border-top-color: #C7CBB8; }
   footer, footer a { color: #8fa088; }
   @media (max-width: 860px) { .hero h1 { font-size: 34px; letter-spacing: -1px; } }
+  /* ---- performance: no live blur filters, no glass blur, GPU-friendly animation ---- */
+  .aurora { filter: none; opacity: .45; will-change: transform; animation-duration: 24s;
+    background: radial-gradient(40% 35% at 25% 30%, rgba(62,90,63,.9), transparent 70%), radial-gradient(35% 30% at 72% 22%, rgba(30,58,46,.9), transparent 70%),
+                radial-gradient(35% 35% at 55% 78%, rgba(107,127,103,.55), transparent 70%); }
+  .card, .steps, .stat { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .card { background: #0f1d16; } .steps, .stat { background: rgba(8,17,12,.72); }
+  .hero h1 .w { filter: none; animation-name: fadeWord; }
+  @keyframes fadeWord { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
   @media (prefers-reduced-motion: reduce) { .aurora, .shiny, .hero h1 .w { animation: none; filter: none; opacity: 1; transform: none; } }
   @media (max-width: 860px) { .input-grid, .why, .steps, .sample-grid { grid-template-columns: 1fr; } .steps div { border-right: none; border-bottom: 1px solid #333; } .tiles { grid-template-columns: repeat(3, 1fr); } .hero h1 { font-size: 30px; } }
 </style>
@@ -659,14 +667,21 @@ function blurHeadline() {
 }
 
 // spotlight: soft glow follows the mouse on cards
+let spotQueued = false, spotEvt = null;
 document.addEventListener("pointermove", (e) => {
-  const c = e.target.closest && e.target.closest(".card, .sample, .stat");
-  if (!c) return;
-  c.classList.add("spot");
-  const r = c.getBoundingClientRect();
-  c.style.setProperty("--mx", `${e.clientX - r.left}px`);
-  c.style.setProperty("--my", `${e.clientY - r.top}px`);
-});
+  spotEvt = e;
+  if (spotQueued) return;
+  spotQueued = true;
+  requestAnimationFrame(() => {  // at most once per frame
+    spotQueued = false;
+    const c = spotEvt.target.closest && spotEvt.target.closest(".card, .sample, .stat");
+    if (!c) return;
+    c.classList.add("spot");
+    const r = c.getBoundingClientRect();
+    c.style.setProperty("--mx", `${spotEvt.clientX - r.left}px`);
+    c.style.setProperty("--my", `${spotEvt.clientY - r.top}px`);
+  });
+}, { passive: true });
 
 // header particles: drifting dots joined by faint lines
 function particles() {
@@ -676,12 +691,17 @@ function particles() {
   const resize = () => {
     const dpr = Math.min(devicePixelRatio || 1, 2);
     W = host.clientWidth; H = host.clientHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const n = Math.min(90, Math.round((W * H) / 14000));
+    const n = Math.min(45, Math.round((W * H) / 26000));
     pts = Array.from({ length: n }, () => ({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * .3, vy: (Math.random() - .5) * .3, r: Math.random() * 1.6 + .4 }));
   };
   host.addEventListener("pointermove", (e) => { const r = host.getBoundingClientRect(); mouse = { x: e.clientX - r.left, y: e.clientY - r.top }; });
   host.addEventListener("pointerleave", () => (mouse = { x: -999, y: -999 }));
-  const step = () => {
+  let visible = true, last = 0;
+  new IntersectionObserver(([e]) => (visible = e.isIntersecting)).observe(host);
+  const step = (now = 0) => {
+    requestAnimationFrame(step);
+    if (!visible || document.hidden || now - last < 33) return;  // ~30 fps, pause when not on screen
+    last = now;
     ctx.clearRect(0, 0, W, H);
     for (const p of pts) {
       p.x += p.vx; p.y += p.vy;
@@ -694,7 +714,6 @@ function particles() {
       const a = pts[i], b = pts[j], d = Math.hypot(a.x - b.x, a.y - b.y);
       if (d < 110) { ctx.strokeStyle = `rgba(107,127,103,${(1 - d / 110) * .35})`; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
     }
-    requestAnimationFrame(step);
   };
   resize(); addEventListener("resize", resize); step();
 }

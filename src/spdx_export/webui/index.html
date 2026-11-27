@@ -394,7 +394,13 @@ async function post(url, body) {
 }
 
 async function init() {
-  const info = await (await fetch("/api/info")).json();
+  let info;
+  try { info = await (await fetch("/api/info")).json(); }
+  catch {
+    $("#samples").replaceChildren(h("div", { class: "banner warn", style: "grid-column:1/-1" }, h("div", { class: "icon" }, "⚠"),
+      h("div", {}, h("h3", {}, "The server isn't running"), h("p", {}, "Open this page through web.bat (or the live link), not as a file. Samples and conversion need the server."))));
+    return;
+  }
   const meta = {
     "valid_scan.json": ["s-ok", "Complete scan: 3 packages, 5 files"],
     "valid_scan.csv": ["s-ok", "Same data as a CSV table"],
@@ -692,6 +698,13 @@ function particles() {
   };
   resize(); addEventListener("resize", resize); step();
 }
+
+// "Try it now": smooth scroll + flash the upload card
+document.querySelector('a[href="#try"]').addEventListener("click", (e) => {
+  e.preventDefault();
+  const t = $("#try"); t.scrollIntoView({ behavior: "smooth", block: "start" });
+  t.animate([{ boxShadow: "0 0 0 0 rgba(199,203,184,.0)" }, { boxShadow: "0 0 0 6px rgba(199,203,184,.35)" }, { boxShadow: "0 0 0 0 rgba(199,203,184,.0)" }], { duration: 1200, delay: 350 });
+});
 
 blurHeadline();
 particles();

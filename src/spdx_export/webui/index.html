@@ -201,6 +201,84 @@
   .node small { color: #6B7F67; } .node.root small { color: #C7CBB8; }
   .section-label { font-size: 12px; text-transform: uppercase; letter-spacing: .8px; color: #6B7F67; font-weight: 700; margin: 6px 0 8px; }
   @media (max-width: 860px) { .stats { grid-template-columns: repeat(2, 1fr); } .overview { grid-template-columns: 1fr; } }
+
+  /* ================= v4: dark "React Bits" style ================= */
+  :root { --bg: #08110c; --card: rgba(19,36,27,.72); --ink: #e8ecdf; --muted: #9aa894; --line: rgba(199,203,184,.14); }
+  html { background: #08110c; }
+  body { background: #08110c; color: #e8ecdf; }
+  header { position: relative; overflow: hidden; background: #08110c; border-bottom: 1px solid var(--line); }
+  #fx { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+  .aurora { position: absolute; inset: -30%; z-index: 0; filter: blur(70px); opacity: .55; pointer-events: none;
+    background: radial-gradient(35% 30% at 25% 30%, #3E5A3F, transparent 70%), radial-gradient(30% 25% at 70% 20%, #1E3A2E, transparent 70%),
+                radial-gradient(30% 30% at 55% 75%, #6B7F67, transparent 70%);
+    animation: aurora 16s ease-in-out infinite alternate; }
+  @keyframes aurora { 0% { transform: translate(0,0) rotate(0deg) scale(1); } 50% { transform: translate(4%,-3%) rotate(8deg) scale(1.08); } 100% { transform: translate(-4%,3%) rotate(-6deg) scale(1); } }
+  .grid-dots { position: absolute; inset: 0; z-index: 0; opacity: .35; pointer-events: none;
+    background-image: radial-gradient(rgba(199,203,184,.35) 1px, transparent 1px); background-size: 22px 22px;
+    mask-image: radial-gradient(ellipse at 50% 30%, #000 30%, transparent 75%); -webkit-mask-image: radial-gradient(ellipse at 50% 30%, #000 30%, transparent 75%); }
+  .nav, .hero { position: relative; z-index: 1; }
+  .badge-new { display: inline-flex; gap: 8px; align-items: center; font-size: 13px; padding: 4px 12px 4px 4px; border: 1px solid var(--line);
+    border-radius: 999px; background: rgba(15,31,23,.6); color: #C7CBB8; margin-bottom: 18px; }
+  .badge-new b { background: #C7CBB8; color: #0F1F17; border-radius: 999px; padding: 2px 8px; font-size: 11px; }
+  .hero { padding-top: 46px; padding-bottom: 54px; }
+  .hero h1 { font-size: 56px; letter-spacing: -2px; max-width: 900px; }
+  .hero h1 .w { display: inline-block; filter: blur(10px); opacity: 0; transform: translateY(10px); animation: blurIn .7s ease forwards; }
+  @keyframes blurIn { to { filter: blur(0); opacity: 1; transform: none; } }
+  .shiny { background: linear-gradient(110deg, #C7CBB8 35%, #ffffff 50%, #C7CBB8 65%); background-size: 250% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent; animation: shine 4s linear infinite; }
+  @keyframes shine { from { background-position: 120% 0; } to { background-position: -120% 0; } }
+  .hero p { color: #b7c0ae; opacity: 1; font-size: 17px; }
+  .cta { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+  .btn { font-weight: 600; padding: 12px 20px; border-radius: 12px; text-decoration: none; display: inline-flex; gap: 8px; align-items: center; font-size: 15px; }
+  .btn.light { background: #e8ecdf; color: #0F1F17; } .btn.light:hover { background: #fff; transform: translateY(-1px); }
+  .btn.ghost { border: 1px solid var(--line); color: #e8ecdf; background: rgba(15,31,23,.5); } .btn.ghost:hover { border-color: #C7CBB8; }
+  .steps { background: rgba(8,17,12,.55); backdrop-filter: blur(6px); border-color: var(--line); }
+  .steps div { border-color: var(--line); color: #9aa894; } .steps div.active { background: rgba(62,90,63,.35); }
+  .stat { background: rgba(8,17,12,.55); backdrop-filter: blur(6px); border-color: var(--line); }
+  main { margin-top: 24px; }
+  .card { background: var(--card); border: 1px solid var(--line); backdrop-filter: blur(8px); box-shadow: 0 20px 50px rgba(0,0,0,.25); position: relative; overflow: hidden; }
+  .spot { position: relative; overflow: hidden; }
+  .spot::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .25s;
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(199,203,184,.10), transparent 45%); }
+  .spot:hover::before { opacity: 1; }
+  h2, .label, .section-label, th { color: #8fa088; }
+  .muted { color: var(--muted); }
+  .drop { background: rgba(8,17,12,.5); border-color: rgba(199,203,184,.3); color: #e8ecdf; }
+  .drop:hover, .drop.over { background: rgba(62,90,63,.18); border-color: #C7CBB8; }
+  button { background: rgba(8,17,12,.5); border-color: var(--line); color: #e8ecdf; }
+  button:hover { border-color: #C7CBB8; color: #fff; }
+  .sample small { color: #9aa894; }
+  .sample:hover { background: rgba(62,90,63,.35); color: #fff; border-color: #6B7F67; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+  .s-ok::before, .s-warn::before, .s-err::before { color: #C7CBB8; }
+  .banner.ok { background: rgba(62,90,63,.22); color: #dfe8d6; border-color: #6B7F67; }
+  .banner.warn { background: rgba(199,203,184,.07); color: #e8ecdf; border-color: #9aa894; }
+  .banner.err { background: rgba(120,40,30,.22); color: #f2d6cf; border-color: #a5584a; }
+  .tile { background: rgba(8,17,12,.5); border-color: var(--line); } .tile b { color: #e8ecdf; } .tile.ok b { color: #b8d1a8; }
+  .tile.err { border-color: #a5584a; } .tile.err b { color: #f2b8aa; }
+  .tile.warn { border-color: #9aa894; border-style: dashed; } .tile.warn b { color: #e6dfb8; }
+  .tile span { color: #9aa894; }
+  .tabs { border-color: var(--line); } .tabs button { background: none; color: #9aa894; }
+  .tabs button.active { color: #e8ecdf; border-bottom-color: #C7CBB8; }
+  td, th { border-color: rgba(199,203,184,.1); } td { color: #dde3d3; }
+  .pkg { background: rgba(8,17,12,.45); border-color: var(--line); } .pkg:hover { border-color: #6B7F67; box-shadow: 0 10px 30px rgba(0,0,0,.3); }
+  .pkg summary .meta, .kv div:nth-child(odd) { color: #9aa894; }
+  .lic { background: #3E5A3F; color: #eef0e8; } .lic.na, .na { background: rgba(199,203,184,.08); color: #C7CBB8; border: 1px dashed #6B7F67; }
+  .overview { background: rgba(8,17,12,.45); border-color: var(--line); }
+  .donut text { fill: #e8ecdf; } .donut circle:first-child { stroke: rgba(199,203,184,.1); }
+  .node { background: rgba(8,17,12,.6); border-color: var(--line); color: #e8ecdf; } .node small { color: #9aa894; }
+  .node.root { background: #C7CBB8; color: #0F1F17; } .node.root small { color: #3E5A3F; }
+  .tree ul, .tree ul > li::before { border-color: #3E5A3F; }
+  .chip.ERROR { background: #a5584a; color: #fff; } .chip.WARNING { background: none; color: #e8ecdf; border-color: #9aa894; }
+  .chip.INFO { background: none; color: #9aa894; border-color: #3E5A3F; }
+  .filters button.active { background: #C7CBB8; color: #0F1F17; border-color: #C7CBB8; }
+  button.primary { background: #C7CBB8; color: #0F1F17; border-color: #C7CBB8; } button.primary:hover { background: #fff; color: #0F1F17; }
+  pre { background: #050b08; color: #C7CBB8; border: 1px solid var(--line); }
+  .bar { background: rgba(199,203,184,.1); } .bar div { background: linear-gradient(90deg, #3E5A3F, #C7CBB8); }
+  .why div { border-left-color: #6B7F67; color: #b7c0ae; } .why b { color: #e8ecdf; }
+  .loader { color: #C7CBB8; } .loader i { border-color: rgba(199,203,184,.2); border-top-color: #C7CBB8; }
+  footer, footer a { color: #8fa088; }
+  @media (max-width: 860px) { .hero h1 { font-size: 34px; letter-spacing: -1px; } }
+  @media (prefers-reduced-motion: reduce) { .aurora, .shiny, .hero h1 .w { animation: none; filter: none; opacity: 1; transform: none; } }
   @media (max-width: 860px) { .input-grid, .why, .steps, .sample-grid { grid-template-columns: 1fr; } .steps div { border-right: none; border-bottom: 1px solid #333; } .tiles { grid-template-columns: repeat(3, 1fr); } .hero h1 { font-size: 30px; } }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -208,13 +286,21 @@
 </head>
 <body>
 <header>
+  <div class="aurora"></div>
+  <canvas id="fx"></canvas>
+  <div class="grid-dots"></div>
   <div class="nav">
     <div class="logo"><div class="mark">S</div>SPDX Export Tool</div>
     <a href="https://github.com/bibekbrg/spdx-export-tool" target="_blank" rel="noopener">View code on GitHub ↗</a>
   </div>
   <div class="hero">
-    <h1>Turn scan results into a valid SPDX&nbsp;2.3 SBOM.</h1>
+    <div class="badge-new"><b>LIVE</b> SPDX 2.3 · official schema validation</div>
+    <h1 id="headline" data-text="Turn scan results into a valid SPDX 2.3 SBOM.">Turn scan results into a valid SPDX&nbsp;2.3 SBOM.</h1>
     <p>Upload a scanner's JSON or CSV output. The tool builds a standard Software Bill of Materials, checks it against the official SPDX schema, and never makes up missing data.</p>
+    <div class="cta">
+      <a class="btn light" href="#try">Try it now →</a>
+      <a class="btn ghost" href="https://github.com/bibekbrg/spdx-export-tool" target="_blank" rel="noopener">View on GitHub</a>
+    </div>
     <div class="steps">
       <div><b><span>1</span>Upload</b>JSON or CSV scan file</div>
       <div><b><span>2</span>Convert</b>Mapped to SPDX 2.3, unknowns marked</div>
@@ -231,7 +317,7 @@
 </header>
 
 <main>
-  <section class="card">
+  <section class="card spot" id="try">
     <h2>Choose a scan file</h2>
     <div class="input-grid">
       <div class="drop" id="drop">
@@ -554,6 +640,58 @@ function cycleSteps() {
   const go = () => { steps.forEach((s, j) => s.classList.toggle("active", j === i)); i = (i + 1) % steps.length; };
   go(); setInterval(go, 1400);
 }
+// headline: blur-in word by word, last words shiny
+function blurHeadline() {
+  const el = $("#headline"); const words = el.dataset.text.split(" ");
+  el.replaceChildren(...words.map((w, i) => {
+    const s = h("span", { class: "w" + (i >= words.length - 3 ? " shiny" : ""), style: `animation-delay:${i * 0.07}s` }, w);
+    return [s, " "];
+  }).flat());
+}
+
+// spotlight: soft glow follows the mouse on cards
+document.addEventListener("pointermove", (e) => {
+  const c = e.target.closest && e.target.closest(".card, .sample, .stat");
+  if (!c) return;
+  c.classList.add("spot");
+  const r = c.getBoundingClientRect();
+  c.style.setProperty("--mx", `${e.clientX - r.left}px`);
+  c.style.setProperty("--my", `${e.clientY - r.top}px`);
+});
+
+// header particles: drifting dots joined by faint lines
+function particles() {
+  const cv = $("#fx"), ctx = cv.getContext("2d"), host = cv.parentElement;
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  let W, H, pts = [], mouse = { x: -999, y: -999 };
+  const resize = () => {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    W = host.clientWidth; H = host.clientHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const n = Math.min(90, Math.round((W * H) / 14000));
+    pts = Array.from({ length: n }, () => ({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * .3, vy: (Math.random() - .5) * .3, r: Math.random() * 1.6 + .4 }));
+  };
+  host.addEventListener("pointermove", (e) => { const r = host.getBoundingClientRect(); mouse = { x: e.clientX - r.left, y: e.clientY - r.top }; });
+  host.addEventListener("pointerleave", () => (mouse = { x: -999, y: -999 }));
+  const step = () => {
+    ctx.clearRect(0, 0, W, H);
+    for (const p of pts) {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > W) p.vx *= -1; if (p.y < 0 || p.y > H) p.vy *= -1;
+      const dm = Math.hypot(p.x - mouse.x, p.y - mouse.y);
+      if (dm < 120) { p.x += (p.x - mouse.x) / dm * .6; p.y += (p.y - mouse.y) / dm * .6; }
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fillStyle = "rgba(199,203,184,.7)"; ctx.fill();
+    }
+    for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) {
+      const a = pts[i], b = pts[j], d = Math.hypot(a.x - b.x, a.y - b.y);
+      if (d < 110) { ctx.strokeStyle = `rgba(107,127,103,${(1 - d / 110) * .35})`; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+    }
+    requestAnimationFrame(step);
+  };
+  resize(); addEventListener("resize", resize); step();
+}
+
+blurHeadline();
+particles();
 countUp();
 cycleSteps();
 init();
